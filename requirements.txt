@@ -1,1 +1,8 @@
 python-binance
+binance-futures
+pandas
+numpy
+ta
+schedule
+ccxt
+python-dotenv

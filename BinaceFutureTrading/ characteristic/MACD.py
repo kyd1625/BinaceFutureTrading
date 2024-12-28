@@ -66,7 +66,7 @@ def calculate_macd_and_analyze(data, short_period=12, long_period=26, signal_per
     else:
         analysis = "중립"
 
-    print(result)
+
 
     return {
         "MACD": latest_macd,
@@ -74,8 +74,8 @@ def calculate_macd_and_analyze(data, short_period=12, long_period=26, signal_per
         "Analysis": analysis
     }
 
-if __name__ == '__main__':
 
+def returnToMacd():
     # 심볼 및 타임프레임 설정
     interval = Client.KLINE_INTERVAL_5MINUTE
 
@@ -84,4 +84,9 @@ if __name__ == '__main__':
 
     # MACD 계산 및 분석
     result = calculate_macd_and_analyze(data)
+    print(result)
 
+    return result
+
+if __name__ == '__main__':
+    returnToMacd()

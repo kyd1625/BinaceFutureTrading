@@ -1,93 +1,70 @@
-import numpy as np
 import pandas as pd
+import numpy as np
 from binance.client import Client
-from binance.exceptions import BinanceAPIException
 from BinaceFutureTrading.config.secrets import APIKey, secretKey
 from BinaceFutureTrading.config.settings import testnetYN, symbol
-
 
 client = Client(APIKey, secretKey)
 if testnetYN == "Y" :
     client.FUTURES_URL = client.FUTURES_TESTNET_URL # testnetYN = "Y" 일시 테스트넷으로 적용
 
-def get_historical_data(symbol, interval, lookback):
-    """
-    지정된 심볼에 대해 과거 데이터를 가져오는 함수.
 
-    Args:
-        symbol (str): 거래할 심볼 (예: "BTCUSDT").
-        interval (str): 데이터 간격 (예: '1m', '5m', '1h' 등).
-        lookback (int): 조회할 데이터 개수 (예: 1000).
+# RSI 계산 함수
+def calculate_rsi(data, period=14):
+    delta = data['close'].diff()
+    gain = np.where(delta > 0, delta, 0)
+    loss = np.where(delta < 0, -delta, 0)
 
-    Returns:
-        pd.DataFrame: 과거 가격 데이터
-    """
-    try:
-        # 과거 가격 데이터 요청 (종가만 사용)
-        klines = client.futures_klines(symbol=symbol, interval=interval, limit=lookback)
-        # 종가 리스트로 변환
-        close_prices = [float(kline[4]) for kline in klines]
-        # DataFrame으로 변환
-        df = pd.DataFrame(close_prices, columns=["close"])
-        return df
-    except BinanceAPIException as e:
-        print(f"데이터 가져오기 오류: {e}")
-        return None
+    avg_gain = pd.Series(gain).rolling(window=period).mean()
+    avg_loss = pd.Series(loss).rolling(window=period).mean()
 
-def calculate_rsi(df, period=14):
-    """
-    주어진 데이터프레임에서 RSI 값을 계산하는 함수.
-
-    Args:
-        df (pd.DataFrame): 가격 데이터 (종가).
-        period (int): RSI를 계산할 기간 (기본값은 14일).
-
-    Returns:
-        pd.Series: 계산된 RSI 값
-    """
-    # 가격 변화 (종가의 차이)
-    delta = df['close'].diff()
-
-    # 상승과 하락을 분리
-    gain = delta.where(delta > 0, 0)  # 상승
-    loss = -delta.where(delta < 0, 0)  # 하락
-
-    # 14일 평균 상승폭, 평균 하락폭 계산
-    avg_gain = gain.rolling(window=period).mean()
-    avg_loss = loss.rolling(window=period).mean()
-
-    # RS 계산 (Relative Strength)
     rs = avg_gain / avg_loss
-
-    # RSI 계산
     rsi = 100 - (100 / (1 + rs))
-
     return rsi
 
-def calculate_average_rsi(rsi_series, num_values=5):
-    """
-    최근 num_values개의 RSI 값의 평균을 계산하는 함수.
+# RSI 분석 함수
+def analyze_rsi(rsi_values):
+    latest_rsi = rsi_values.iloc[-1]  # 최신 RSI 값
+    prev_rsi = rsi_values.iloc[-2]   # 바로 직전 RSI 값
 
-    Args:
-        rsi_series (pd.Series): RSI 값의 시리즈.
-        num_values (int): 평균을 계산할 최근 RSI 값의 개수 (기본값은 5).
+    if latest_rsi > 70:
+        signal = "과매수 - 매도 신호"
+    elif latest_rsi < 30:
+        signal = "과매도 - 매수 신호"
+    else:
+        if latest_rsi > prev_rsi:
+            signal = "상승 추세"
+        else:
+            signal = "하락 추세"
+    return signal, latest_rsi
 
-    Returns:
-        float: 최근 num_values개의 RSI 값의 평균
-    """
-    # 최근 num_values개의 RSI 값을 가져오고 평균 계산
-    return rsi_series.tail(num_values).mean()
+# Binance에서 데이터 가져오기
+def fetch_klines(symbol, interval, limit=100):
+    klines = client.futures_klines(symbol=symbol, interval=interval, limit=limit)
+    data = pd.DataFrame(klines, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume',
+                                         'close_time', 'quote_asset_volume', 'number_of_trades',
+                                         'taker_buy_base_volume', 'taker_buy_quote_volume', 'ignore'])
+    data['close'] = data['close'].astype(float)
+    return data
 
-# RSI 계산 예시
-def retrunToRis() :
-    global average_rsi
-    interval = "5m"  # 5분 간격
-    lookback = 1000  # 최근 1000개의 데이터
-    df = get_historical_data(symbol, interval, lookback)
+def returnToRsi():
+    # 심볼 및 설정
+    interval = Client.KLINE_INTERVAL_5MINUTE
 
-    if df is not None:
-        rsi = calculate_rsi(df)
-        average_rsi = calculate_average_rsi(rsi)
-        print(f"최근 5개의 RSI 평균값: {average_rsi}")
+    # 데이터 가져오기 및 RSI 계산
+    data = fetch_klines(symbol, interval)
+    data['rsi'] = calculate_rsi(data)
 
-    return average_rsi
+    # RSI 분석
+    rsi_values = data['rsi'].dropna()  # NaN 제거
+    signal, latest_rsi = analyze_rsi(rsi_values)
+
+    print(f"RSI 분석 결과: {signal}")
+    print(f"최신 RSI 값: {latest_rsi:.2f}")
+    return {
+        "RSI": latest_rsi,
+        "Analysis": signal
+    }
+
+if __name__ == '__main__':
+    returnToRsi()

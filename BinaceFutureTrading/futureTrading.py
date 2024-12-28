@@ -4,13 +4,12 @@ from binance import BinanceAPIException, BinanceRequestException
 
 from BinaceFutureTrading.syncedToServerTime import returnTo_synced_timestamp
 from config.secrets import APIKey, secretKey
-from config.settings import testnetYN, symbol, usdt_ratio
+from config.settings import testnetYN, symbols, usdt_ratio  # symbols를 리스트로 받음
 from binance.client import Client
 
 client = Client(APIKey, secretKey)
 if testnetYN == "Y" :
-    client.FUTURES_URL = client.FUTURES_TESTNET_URL # testnetYN = "Y" 일시 테스트넷으로 적용
-
+    client.FUTURES_URL = client.FUTURES_TESTNET_URL  # testnetYN = "Y" 일시 테스트넷으로 적용
 
 def get_symbol_precision(symbol):
     """
@@ -70,10 +69,14 @@ def place_order(symbol, side, usdt_ratio, synced_timestamp):
         quantity=quantity,  # 계산된 수량
         timestamp=synced_timestamp,
     )
-    print(f"주문 완료: {order}")
+    print(f"{symbol} 주문 완료: {order}")
+
+# 여러 개의 심볼에 대해 매매 진행
+def place_orders_for_multiple_symbols(symbols, side, usdt_ratio, synced_timestamp):
+    for symbol in symbols:
+        place_order(symbol, side, usdt_ratio, synced_timestamp)
 
 # 테스트 실행
 synced_timestamp = returnTo_synced_timestamp()
-place_order(symbol, "BUY", usdt_ratio, synced_timestamp)  # BTCUSDT를 USDT의 10%로 매수
-
-
+# symbols = ["BTCUSDT", "ETHUSDT", "XRPUSDT"]  # 여러 심볼을 리스트로 받음
+place_orders_for_multiple_symbols(symbols, "BUY", usdt_ratio, synced_timestamp)  # 여러 심볼을 USDT의 10%로 매수

@@ -90,8 +90,8 @@ def get_position_for_symbol(symbol):
 
 # 테스트 실행
 #get_all_positions()
-#get_position_for_symbol("BTCUSDT")
+#get_position_for_symbol("BCHUSDT")
 #print(get_position_for_symbol("XRPUSDT"))
 
-if(get_position_for_symbol("XRPUSDT") != None):
-    print("해당 포지션 존재 함")
+#if(get_position_for_symbol("XRPUSDT") != None):
+#    print("해당 포지션 존재 함")

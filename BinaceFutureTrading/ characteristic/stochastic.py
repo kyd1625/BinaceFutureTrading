@@ -1,7 +1,7 @@
 import pandas as pd
 from binance.client import Client
 from BinaceFutureTrading.config.secrets import APIKey, secretKey
-from BinaceFutureTrading.config.settings import testnetYN, symbol
+from BinaceFutureTrading.config.settings import testnetYN
 
 client = Client(APIKey, secretKey)
 if testnetYN == "Y" :
@@ -89,7 +89,7 @@ def calculate_stochastic(data, period=14, smooth_k=3, smooth_d=3):
     }
 
 
-def returnTostochastic():
+def returnTostochastic(symbol):
     # 심볼 및 타임프레임 설정
     interval = Client.KLINE_INTERVAL_5MINUTE
 

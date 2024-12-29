@@ -3,7 +3,7 @@ from binance.exceptions import BinanceAPIException
 
 from BinaceFutureTrading.syncedToServerTime import returnTo_synced_timestamp
 from config.secrets import APIKey, secretKey
-from config.settings import testnetYN, symbol, leverage
+from config.settings import testnetYN, symbols, leverage
 
 
 client = Client(APIKey, secretKey)
@@ -36,5 +36,5 @@ def set_leverage(symbol, leverage, synced_timestamp):
         print(f"레버리지 설정 중 오류 발생: {e}")
 
 # 테스트 실행
-synced_timestamp = returnTo_synced_timestamp()
-set_leverage(symbol, leverage, synced_timestamp)  # BTCUSDT의 레버리지를 10배로 설정
+#synced_timestamp = returnTo_synced_timestamp()
+#set_leverage(symbol, leverage, synced_timestamp)  # BTCUSDT의 레버리지를 10배로 설정

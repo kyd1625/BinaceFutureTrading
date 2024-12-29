@@ -2,6 +2,8 @@ import math
 import time
 from binance import BinanceAPIException, BinanceRequestException
 
+from BinaceFutureTrading.UserApi import get_position_for_symbol
+from BinaceFutureTrading.closePosition import close_position
 from BinaceFutureTrading.syncedToServerTime import returnTo_synced_timestamp
 from config.secrets import APIKey, secretKey
 from config.settings import testnetYN, symbols, usdt_ratio  # symbols를 리스트로 받음
@@ -33,6 +35,22 @@ def place_order(symbol, side, usdt_ratio, synced_timestamp):
         side (str): 매매 방향 ("BUY" 또는 "SELL").
         usdt_ratio (float): USDT 잔고의 몇 퍼센트를 사용할지 (예: 0.1 => 10%).
     """
+
+    # 현재 포지션 확인후 현재 포지션과 다른 매매 시 현재 포지션 청산
+    nowPosition = get_position_for_symbol(symbol)
+
+    if(nowPosition != None):
+
+        if(nowPosition.get("positionAmt") > 0):
+            nowSide = "BUY"
+        else:
+            nowSide = "SELL"
+
+        if(nowSide != side):
+            close_position(symbol)
+            return
+
+
     # 현재 USDT 잔고 가져오기
     account_balance = client.futures_account_balance()
     usdt_balance = next(
@@ -79,4 +97,4 @@ def place_orders_for_multiple_symbols(symbols, side, usdt_ratio, synced_timestam
 # 테스트 실행
 synced_timestamp = returnTo_synced_timestamp()
 # symbols = ["BTCUSDT", "ETHUSDT", "XRPUSDT"]  # 여러 심볼을 리스트로 받음
-place_orders_for_multiple_symbols(symbols, "BUY", usdt_ratio, synced_timestamp)  # 여러 심볼을 USDT의 10%로 매수
+place_orders_for_multiple_symbols(symbols, "SELL", usdt_ratio, synced_timestamp)  # 여러 심볼을 USDT의 10%로 매수

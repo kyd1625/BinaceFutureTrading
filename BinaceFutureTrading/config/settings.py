@@ -2,6 +2,6 @@
 # 추후 변경 예정
 
 testnetYN = "Y"
-symbols = ["BTCUSDT", "ETHUSDT"] # 종목 세팅
+symbols = ["BTCUSDT", "ETHUSDT", "BCHUSDT"] # 종목 세팅
 usdt_ratio = 0.1 # USDT 잔고의 몇 퍼센트를 사용할지 (예: 0.1 => 10%).
 leverage = 5

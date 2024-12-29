@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from binance.client import Client
 from BinaceFutureTrading.config.secrets import APIKey, secretKey
-from BinaceFutureTrading.config.settings import testnetYN, symbol
+from BinaceFutureTrading.config.settings import testnetYN
 
 client = Client(APIKey, secretKey)
 if testnetYN == "Y" :
@@ -77,7 +77,7 @@ def calculate_bollinger_bands(data, period=20, std_dev=2):
         "Analysis": analysis
     }
 
-def returnToBollinger():
+def returnToBollinger(symbol):
     # 심볼 및 타임프레임 설정
     interval = Client.KLINE_INTERVAL_5MINUTE
 

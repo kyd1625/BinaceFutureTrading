@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from binance.client import Client
 from BinaceFutureTrading.config.secrets import APIKey, secretKey
-from BinaceFutureTrading.config.settings import testnetYN, symbol
+from BinaceFutureTrading.config.settings import testnetYN
 
 client = Client(APIKey, secretKey)
 if testnetYN == "Y" :
@@ -47,7 +47,7 @@ def fetch_klines(symbol, interval, limit=100):
     data['close'] = data['close'].astype(float)
     return data
 
-def returnToRsi():
+def returnToRsi(symbol):
     # 심볼 및 설정
     interval = Client.KLINE_INTERVAL_5MINUTE
 
@@ -66,5 +66,5 @@ def returnToRsi():
         "Analysis": signal
     }
 
-if __name__ == '__main__':
-    returnToRsi()
+#if __name__ == '__main__':
+#    returnToRsi()

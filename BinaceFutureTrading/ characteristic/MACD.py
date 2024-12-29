@@ -1,7 +1,7 @@
 import pandas as pd
 from binance.client import Client
 from BinaceFutureTrading.config.secrets import APIKey, secretKey
-from BinaceFutureTrading.config.settings import testnetYN, symbol
+from BinaceFutureTrading.config.settings import testnetYN
 
 client = Client(APIKey, secretKey)
 if testnetYN == "Y" :
@@ -75,7 +75,7 @@ def calculate_macd_and_analyze(data, short_period=12, long_period=26, signal_per
     }
 
 
-def returnToMacd():
+def returnToMacd(symbol):
     # 심볼 및 타임프레임 설정
     interval = Client.KLINE_INTERVAL_5MINUTE
 

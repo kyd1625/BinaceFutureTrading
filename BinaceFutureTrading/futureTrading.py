@@ -95,6 +95,10 @@ def place_orders_for_multiple_symbols(symbols, side, usdt_ratio, synced_timestam
         place_order(symbol, side, usdt_ratio, synced_timestamp)
 
 # 테스트 실행
-synced_timestamp = returnTo_synced_timestamp()
+#synced_timestamp = returnTo_synced_timestamp()
 # symbols = ["BTCUSDT", "ETHUSDT", "XRPUSDT"]  # 여러 심볼을 리스트로 받음
-place_orders_for_multiple_symbols(symbols, "SELL", usdt_ratio, synced_timestamp)  # 여러 심볼을 USDT의 10%로 매수
+#place_orders_for_multiple_symbols(symbols, "SELL", usdt_ratio, synced_timestamp)  # 여러 심볼을 USDT의 10%로 매수
+
+def realTrading(symbol, side):
+    synced_timestamp = returnTo_synced_timestamp()
+    place_order(symbol, side, usdt_ratio, synced_timestamp)

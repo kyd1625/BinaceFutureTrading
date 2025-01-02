@@ -59,12 +59,14 @@ def returnToRsi(symbol):
     rsi_values = data['rsi'].dropna()  # NaN 제거
     signal, latest_rsi = analyze_rsi(rsi_values)
 
-    print(f"RSI 분석 결과: {signal}")
-    print(f"최신 RSI 값: {latest_rsi:.2f}")
+    #print(f"RSI 분석 결과: {signal}")
+    #print(f"최신 RSI 값: {latest_rsi:.2f}")
     return {
         "RSI": latest_rsi,
         "Analysis": signal
     }
 
+# 테스트용 마지막 주석처리 예정
 #if __name__ == '__main__':
-#    returnToRsi()
+ #   result = returnToRsi("BTCUSDT") # 분석후 매매 시 RSI 해당값 사용하면 됨
+  #  print(result.get("RSI"))

@@ -84,9 +84,9 @@ def returnToMacd(symbol):
 
     # MACD 계산 및 분석
     result = calculate_macd_and_analyze(data)
-    print(result)
+    #print(result)
 
     return result
 
-if __name__ == '__main__':
-    returnToMacd()
+#if __name__ == '__main__':
+    #returnToMacd("BTCUSDT") # MACD / Signal / Analysis

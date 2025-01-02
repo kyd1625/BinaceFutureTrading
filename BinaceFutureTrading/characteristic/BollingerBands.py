@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from binance.client import Client
 from BinaceFutureTrading.config.secrets import APIKey, secretKey
 from BinaceFutureTrading.config.settings import testnetYN
@@ -7,12 +8,6 @@ client = Client(APIKey, secretKey)
 if testnetYN == "Y" :
     client.FUTURES_URL = client.FUTURES_TESTNET_URL # testnetYN = "Y" 일시 테스트넷으로 적용
 
-# Binance API Key & Secret
-api_key = "YOUR_API_KEY"
-api_secret = "YOUR_API_SECRET"
-
-# Binance 클라이언트 초기화
-client = Client(api_key, api_secret)
 
 def fetch_klines(symbol, interval, limit=100):
     """
@@ -37,70 +32,64 @@ def fetch_klines(symbol, interval, limit=100):
     df["low"] = df["low"].astype(float)
     return df
 
-def calculate_stochastic(data, period=14, smooth_k=3, smooth_d=3):
+def calculate_bollinger_bands(data, period=20, std_dev=2):
     """
-    스토캐스틱 오실레이터 (%K, %D) 계산 및 분석.
+    볼린저 밴드 계산 및 분석.
 
     Parameters:
         - data (pd.DataFrame): 'close', 'high', 'low' 열이 포함된 캔들 데이터.
-        - period (int): 스토캐스틱을 계산할 기간 (기본값: 14).
-        - smooth_k (int): %K의 평활화 기간 (기본값: 3).
-        - smooth_d (int): %D의 평활화 기간 (기본값: 3).
+        - period (int): 이동 평균을 계산할 기간 (기본값: 20).
+        - std_dev (int): 표준편차의 배수 (기본값: 2).
 
     Returns:
-        - dict: %K, %D, 분석 결과를 포함한 딕셔너리.
+        - dict: 볼린저 밴드와 분석 결과를 포함한 딕셔너리.
     """
-    high = data['high']
-    low = data['low']
     close = data['close']
 
-    # %K 계산
-    lowest_low = low.rolling(window=period).min()
-    highest_high = high.rolling(window=period).max()
+    # 중앙선 (Middle Band): 이동 평균
+    middle_band = close.rolling(window=period).mean()
 
-    stoch_k = 100 * ((close - lowest_low) / (highest_high - lowest_low))
+    # 표준편차
+    std_dev_value = close.rolling(window=period).std()
 
-    # %K의 평활화 (Smoothing)
-    stoch_k_smoothed = stoch_k.rolling(window=smooth_k).mean()
+    # 상단 밴드 (Upper Band)와 하단 밴드 (Lower Band) 계산
+    upper_band = middle_band + (std_dev * std_dev_value)
+    lower_band = middle_band - (std_dev * std_dev_value)
 
-    # %D 계산 (%K의 EMA)
-    stoch_d = stoch_k_smoothed.rolling(window=smooth_d).mean()
+    # 최신 데이터
+    latest_close = close.iloc[-1]
+    latest_upper_band = upper_band.iloc[-1]
+    latest_lower_band = lower_band.iloc[-1]
 
-    # 최신 %K, %D 값
-    latest_k = stoch_k_smoothed.iloc[-1]
-    latest_d = stoch_d.iloc[-1]
-
-    # 분석: %K와 %D의 교차 및 과매수/과매도 판단
-    if latest_k > latest_d:
-        analysis = "매수 신호 (K > D)"
-    elif latest_k < latest_d:
-        analysis = "매도 신호 (K < D)"
-    elif latest_k > 80:
-        analysis = "과매수 (Overbought)"
-    elif latest_k < 20:
-        analysis = "과매도 (Oversold)"
+    # 분석: 가격이 상단 밴드를 넘으면 과매수, 하단 밴드를 넘으면 과매도
+    if latest_close > latest_upper_band:
+        analysis = "매도 신호" # 과매수시 매도 신호
+    elif latest_close < latest_lower_band:
+        analysis = "매수 신호" # 과매도시 매수 신호
     else:
         analysis = "중립"
 
     return {
-        "%K": latest_k,
-        "%D": latest_d,
+        "Upper Band": latest_upper_band,
+        "Lower Band": latest_lower_band,
+        "Middle Band": middle_band.iloc[-1],
+        "Close": latest_close,
         "Analysis": analysis
     }
 
-
-def returnTostochastic(symbol):
+def returnToBollinger(symbol):
     # 심볼 및 타임프레임 설정
     interval = Client.KLINE_INTERVAL_5MINUTE
 
     # 캔들 데이터 가져오기
     data = fetch_klines(symbol, interval)
 
-    # 스토캐스틱 계산 및 분석
-    result = calculate_stochastic(data)
-    print(result)
+    # 볼린저 밴드 계산 및 분석
+    result = calculate_bollinger_bands(data)
+    #print(result)
 
     return result
 
-if __name__ == '__main__':
-    returnTostochastic()
+# 테스트용 MAIN함수 마지막 주석 처리 예정
+#if __name__ == '__main__':
+    #returnToBollinger("BTCUSDT") # Upper Band / Lower Band / Middle Band / Close / Analysis

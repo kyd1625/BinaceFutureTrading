@@ -59,6 +59,8 @@ def analyze_indicators(rsi, macd, macdSignal, stoch_k, stoch_d, close_price, bb_
     else:
         side = "HOLD"  # 신호가 부족하면 대기
 
+    print("buy_signals -> " + buy_signals)
+    print("sell_signals -> " + sell_signals)
     print("symbol -> " + symbol)
     print("side -> " + side)
 

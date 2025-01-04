@@ -28,10 +28,13 @@ def analyze_indicators(rsi, macd, macdSignal, stoch_k, stoch_d, close_price, bb_
     sell_signals = 0
 
     # RSI 신호
+    print("rsi -> " + rsi.__str__())
     if rsi < 30:
         buy_signals += 1
     elif rsi > 70:
         sell_signals += 1
+
+
 
     # MACD 신호
     if macd > macdSignal:  # MACD선이 시그널선 위에 있을 경우
@@ -39,28 +42,32 @@ def analyze_indicators(rsi, macd, macdSignal, stoch_k, stoch_d, close_price, bb_
     elif macd < macdSignal:  # MACD선이 시그널선 아래에 있을 경우
         sell_signals += 1
 
+
+
     # 스토캐스틱 신호
-    if stoch_k > stoch_d and stoch_k < 20:  # 골든크로스 + 과매도 구간
+    if stoch_k > stoch_d:  # 골든크로스 + 과매도 구간
         buy_signals += 1
-    elif stoch_k < stoch_d and stoch_k > 80:  # 데드크로스 + 과매수 구간
+    elif stoch_k < stoch_d:  # 데드크로스 + 과매수 구간
         sell_signals += 1
+
+
 
     # 볼린저밴드 신호
-    if close_price < bb_lower:  # 하단 밴드에서 반등
-        buy_signals += 1
-    elif close_price > bb_upper:  # 상단 밴드에서 저항
-        sell_signals += 1
+   # if close_price < bb_lower:  # 하단 밴드에서 반등
+   #     buy_signals += 1
+   # elif close_price > bb_upper:  # 상단 밴드에서 저항
+   #     sell_signals += 1
 
     # 신호 분석
-    if buy_signals >= 3:  # 매수 신호가 3개 이상이면 매수
+    if buy_signals >= 2:  # 매수 신호가 3개 이상이면 매수
         side = "BUY"
-    elif sell_signals >= 3:  # 매도 신호가 3개 이상이면 매도
+    elif sell_signals >= 2:  # 매도 신호가 3개 이상이면 매도
         side = "SELL"
     else:
         side = "HOLD"  # 신호가 부족하면 대기
 
-    print("buy_signals -> " + buy_signals)
-    print("sell_signals -> " + sell_signals)
+    print("buy_signals4 -> " + buy_signals.__str__())
+    print("sell_signals4 -> " + sell_signals.__str__())
     print("symbol -> " + symbol)
     print("side -> " + side)
 
@@ -93,4 +100,4 @@ def main():
 if __name__ == "__main__":
     while True:
         main()  # 메인 함수 실행
-        time.sleep(10)  # 10초 대기
+        time.sleep(30)  # 10초 대기

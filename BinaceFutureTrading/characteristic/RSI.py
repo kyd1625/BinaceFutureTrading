@@ -49,7 +49,7 @@ def fetch_klines(symbol, interval, limit=100):
 
 def returnToRsi(symbol):
     # 심볼 및 설정
-    interval = Client.KLINE_INTERVAL_5MINUTE
+    interval = Client.KLINE_INTERVAL_1MINUTE
 
     # 데이터 가져오기 및 RSI 계산
     data = fetch_klines(symbol, interval)
@@ -68,5 +68,5 @@ def returnToRsi(symbol):
 
 # 테스트용 마지막 주석처리 예정
 #if __name__ == '__main__':
- #   result = returnToRsi("BTCUSDT") # 분석후 매매 시 RSI 해당값 사용하면 됨
+    #result = returnToRsi("BTCUSDT") # 분석후 매매 시 RSI 해당값 사용하면 됨
   #  print(result.get("RSI"))

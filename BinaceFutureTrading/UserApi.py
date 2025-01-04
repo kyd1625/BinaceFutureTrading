@@ -88,6 +88,53 @@ def get_position_for_symbol(symbol):
     except Exception as e:
         print(f"에러 발생: {e}")
 
+def get_position_for_symbol_with_pnl(symbol):
+    """
+    특정 심볼에 대한 열린 포지션 정보 및 수익률(PnL)을 가져오는 함수.
+    """
+    try:
+        # 선물 계좌의 포지션 정보 가져오기
+        positions = client.futures_position_information()
+
+        # 특정 심볼에 대한 포지션 찾기
+        for position in positions:
+            if position['symbol'] == symbol:
+                position_amt = float(position['positionAmt'])
+
+                if position_amt != 0:  # 포지션이 열려 있을 경우
+                    # 필드가 존재하는지 확인하고 값이 없으면 기본값을 할당
+                    unrealized_profit = float(position.get('unrealizedProfit', '0.00'))
+                    entry_price = float(position.get('entryPrice', '0.00'))
+                    liquidation_price = float(position.get('liquidationPrice', '0.00'))
+                    leverage = position.get('leverage', '1')
+                    isolated = position.get('isolated', 'FALSE')
+
+                    # 수익률 계산
+                    pnl_percentage = 0.0
+                    if entry_price > 0 and abs(position_amt) > 0:
+                        pnl_percentage = (unrealized_profit / (entry_price * abs(position_amt))) * 100
+
+                    position_info = {
+                        "symbol": symbol,
+                        "positionAmt": position_amt,
+                        "entryPrice": entry_price,  # 진입 가격
+                        "unrealizedProfit": unrealized_profit,  # 미실현 이익
+                        "liquidationPrice": liquidation_price,  # 청산 가격
+                        "leverage": leverage,  # 레버리지
+                        "isolated": isolated,  # 고립 모드 여부
+                        "PnL": round(pnl_percentage, 2),  # 수익률 (%)
+                    }
+                    print("특정 심볼 포지션 정보:")
+                    print(position_info)
+                    return position_info
+
+        print(f"{symbol}에 열린 포지션이 없습니다.")
+        return None
+
+    except Exception as e:
+        print(f"에러 발생: {e}")
+        return None
+
 # 테스트 실행
 #get_all_positions()
 #get_position_for_symbol("BCHUSDT")

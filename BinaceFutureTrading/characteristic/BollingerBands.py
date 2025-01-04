@@ -79,7 +79,7 @@ def calculate_bollinger_bands(data, period=20, std_dev=2):
 
 def returnToBollinger(symbol):
     # 심볼 및 타임프레임 설정
-    interval = Client.KLINE_INTERVAL_5MINUTE
+    interval = Client.KLINE_INTERVAL_1MINUTE
 
     # 캔들 데이터 가져오기
     data = fetch_klines(symbol, interval)

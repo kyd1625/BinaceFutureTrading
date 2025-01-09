@@ -29,45 +29,56 @@ def analyze_indicators(rsi, macd, macdSignal, stoch_k, stoch_d, close_price, bb_
 
     # RSI 신호
     print("rsi -> " + rsi.__str__())
-    if rsi < 30:
+    if rsi < 33:
         buy_signals += 1
-    elif rsi > 70:
+        print("buy_signals1 -> " + buy_signals.__str__())
+    elif rsi > 67:
         sell_signals += 1
+        print("sell_signals1 -> " + sell_signals.__str__())
 
 
 
     # MACD 신호
     if macd > macdSignal:  # MACD선이 시그널선 위에 있을 경우
         buy_signals += 1
+        print("buy_signals2 -> " + buy_signals.__str__())
     elif macd < macdSignal:  # MACD선이 시그널선 아래에 있을 경우
         sell_signals += 1
+        print("sell_signals2 -> " + sell_signals.__str__())
+
 
 
 
     # 스토캐스틱 신호
     if stoch_k > stoch_d:  # 골든크로스 + 과매도 구간
         buy_signals += 1
+        print("buy_signals3 -> " + buy_signals.__str__())
     elif stoch_k < stoch_d:  # 데드크로스 + 과매수 구간
         sell_signals += 1
+        print("sell_signals3 -> " + sell_signals.__str__())
 
 
 
     # 볼린저밴드 신호
-   # if close_price < bb_lower:  # 하단 밴드에서 반등
-   #     buy_signals += 1
-   # elif close_price > bb_upper:  # 상단 밴드에서 저항
-   #     sell_signals += 1
+    if close_price < bb_lower:  # 하단 밴드에서 반등
+        buy_signals += 1
+        print("buy_signals4 -> " + buy_signals.__str__())
+    elif close_price > bb_upper:  # 상단 밴드에서 저항
+        sell_signals += 1
+        print("sell_signals4 -> " + sell_signals.__str__())
+
+
 
     # 신호 분석
-    if buy_signals >= 2:  # 매수 신호가 3개 이상이면 매수
+    if buy_signals >= 3:  # 매수 신호가 3개 이상이면 매수
         side = "BUY"
-    elif sell_signals >= 2:  # 매도 신호가 3개 이상이면 매도
+    elif sell_signals >= 3:  # 매도 신호가 3개 이상이면 매도
         side = "SELL"
     else:
         side = "HOLD"  # 신호가 부족하면 대기
 
-    print("buy_signals4 -> " + buy_signals.__str__())
-    print("sell_signals4 -> " + sell_signals.__str__())
+    print("totalBuy : " + buy_signals.__str__())
+    print("totalSell : " + sell_signals.__str__())
     print("symbol -> " + symbol)
     print("side -> " + side)
 
@@ -76,7 +87,7 @@ def analyze_indicators(rsi, macd, macdSignal, stoch_k, stoch_d, close_price, bb_
 
 def main():
     for symbol in symbols:
-        #print("=" * 200)
+        print("=" * 200)
         #print("symbol : " + symbol)
         resultRsi = returnToRsi(symbol)
         resultBollinger = returnToBollinger(symbol)
@@ -100,4 +111,4 @@ def main():
 if __name__ == "__main__":
     while True:
         main()  # 메인 함수 실행
-        time.sleep(30)  # 10초 대기
+        time.sleep(5)  # 10초 대기

@@ -49,7 +49,7 @@ def fetch_klines(symbol, interval, limit=100):
 
 def returnToRsi(symbol):
     # 심볼 및 설정
-    interval = Client.KLINE_INTERVAL_1MINUTE
+    interval = Client.KLINE_INTERVAL_15MINUTE
 
     # 데이터 가져오기 및 RSI 계산
     data = fetch_klines(symbol, interval)

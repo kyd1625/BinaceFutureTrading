@@ -91,7 +91,7 @@ def calculate_stochastic(data, period=14, smooth_k=3, smooth_d=3):
 
 def returnTostochastic(symbol):
     # 심볼 및 타임프레임 설정
-    interval = Client.KLINE_INTERVAL_1MINUTE
+    interval = Client.KLINE_INTERVAL_15MINUTE
 
     # 캔들 데이터 가져오기
     data = fetch_klines(symbol, interval)

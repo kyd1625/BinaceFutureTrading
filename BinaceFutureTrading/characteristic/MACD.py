@@ -77,7 +77,7 @@ def calculate_macd_and_analyze(data, short_period=12, long_period=26, signal_per
 
 def returnToMacd(symbol):
     # 심볼 및 타임프레임 설정
-    interval = Client.KLINE_INTERVAL_1MINUTE
+    interval = Client.KLINE_INTERVAL_15MINUTE
 
     # 캔들 데이터 가져오기
     data = fetch_klines(symbol, interval)

@@ -38,3 +38,8 @@ def set_leverage(symbol, leverage, synced_timestamp):
 # 테스트 실행
 #synced_timestamp = returnTo_synced_timestamp()
 #set_leverage(symbol, leverage, synced_timestamp)  # BTCUSDT의 레버리지를 10배로 설정
+
+if __name__ == "__main__":
+    for symbol in symbols:
+        synced_timestamp = returnTo_synced_timestamp()
+        set_leverage(symbol, leverage, synced_timestamp)

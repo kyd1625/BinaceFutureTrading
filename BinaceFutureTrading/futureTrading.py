@@ -152,6 +152,7 @@ def place_order(symbol, side, usdt_ratio, synced_timestamp):
     """
 
     # 현재 포지션 확인 후 다른 방향의 포지션이 있을 경우 처리
+
     nowPosition = get_position_for_symbol(symbol)
     if nowPosition:
         if nowPosition.get("positionAmt") > 0:
@@ -160,8 +161,7 @@ def place_order(symbol, side, usdt_ratio, synced_timestamp):
             nowSide = "SELL"
 
         current_PnL = get_position_for_symbol_with_pnl(symbol).get("PnL")
-
-        if nowSide != side and current_PnL > 5:  # 수익률 5% 이상일 때 청산
+        if (nowSide != side and current_PnL > 5) or current_PnL > 5:  # 수익률 5% 이상일 때 청산
             close_position(symbol)
             return
         else:
@@ -210,19 +210,20 @@ def place_order(symbol, side, usdt_ratio, synced_timestamp):
         return
 
     # 주문 실행
-    try:
-        order = client.futures_create_order(
-            symbol=symbol,
-            side=side,  # "BUY" 또는 "SELL"
-            type="MARKET",  # 시장가 주문
-            quantity=quantity,  # 계산된 수량
-            timestamp=synced_timestamp,
-        )
-        print(f"{symbol} 주문 완료: {order}")
-        manage_stop_loss(symbol)  # 손절매 설정
+    if side != "HOLD":
+        try:
+            order = client.futures_create_order(
+                symbol=symbol,
+                side=side,  # "BUY" 또는 "SELL"
+                type="MARKET",  # 시장가 주문
+                quantity=quantity,  # 계산된 수량
+                timestamp=synced_timestamp,
+            )
+            print(f"{symbol} 주문 완료: {order}")
+            manage_stop_loss(symbol)  # 손절매 설정
 
-    except Exception as e:
-        print(f"주문 실패: {e}")
+        except Exception as e:
+            print(f"주문 실패: {e}")
 
 
 def place_order_with_leverage(symbol, side, usdt_ratio, synced_timestamp):

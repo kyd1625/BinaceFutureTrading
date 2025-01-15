@@ -101,12 +101,13 @@ def main():
                                          , resultBollinger.get("Close"), resultBollinger.get("Upper Band"), resultBollinger.get("Lower Band")
                                          , symbol)
 
-        if(requestSide != "HOLD"):
-            realTrading(symbol, requestSide)
-        else:
-            print("=" * 200)
-            print(symbol + " 은 분석결과 매매에 적합하지 않아 매매가 이루어 지지 않습니다.")
-            print("=" * 200)
+        realTrading(symbol, requestSide)
+        #if(requestSide != "HOLD"):
+        #    realTrading(symbol, requestSide)
+        #else:
+        #    print("=" * 200)
+        #    print(symbol + " 은 분석결과 매매에 적합하지 않아 매매가 이루어 지지 않습니다.")
+        #    print("=" * 200)
 
 if __name__ == "__main__":
     while True:

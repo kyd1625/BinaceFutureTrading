@@ -3,9 +3,9 @@
 
 #testnetYN = "Y"
 testnetYN = "N"
-symbols = ["DOGEUSDT", "SUIUSDT", "XRPUSDT", "1000PEPEUSDT", "SOLUSDT", "ACTUSDT", "ADAUSDT"] # 종목 세팅
+symbols = ["DOGEUSDT", "SUIUSDT", "XRPUSDT", "1000PEPEUSDT", "SOLUSDT", "ACTUSDT", "ADAUSDT", "BTCUSDT", "ETHUSDT"] # 종목 세팅
 
 #symbols = ["BTCUSDT", "ETHUSDT", "XRPUSDT"] # 종목 세팅
-usdt_ratio = 0.3 # USDT 잔고의 몇 퍼센트를 사용할지 (예: 0.1 => 10%).
+usdt_ratio = 0.4 # USDT 잔고의 몇 퍼센트를 사용할지 (예: 0.1 => 10%).
 leverage = 10
 stopLoss = 0.1 # 손절매 비율 (예: 0.1 => 10%).

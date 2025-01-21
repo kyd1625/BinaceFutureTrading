@@ -8,7 +8,7 @@ from BinanceFutureTrading.main import startToTrading
 # 반복 작업을 멈추기 위한 이벤트 생성
 stop_event = Event()
 
-def save_to_config(data1, data2, data3, data4, data5, symbols):
+def save_to_config(data1, data2, data3, data4, data5, symbols, stopLoss):
     # 입력 데이터를 secrets.py와 settings.py 파일에 저장
     with open("./config/secrets.py", "w") as file:
         file.write(f"APIKey = '{data1}'\n")
@@ -16,9 +16,10 @@ def save_to_config(data1, data2, data3, data4, data5, symbols):
 
     with open("./config/settings.py", "w") as file:
         file.write(f"testnetYN = '{data3}'\n")
-        file.write(f"usdt_ratio = '{data4}'\n")
-        file.write(f"leverage = '{data5}'\n")
+        file.write(f"usdt_ratio = {float(data4)}\n")  # 소수점 저장
+        file.write(f"leverage = {int(data5)}\n")  # 정수로 저장
         file.write(f"symbols = {symbols}\n")  # symbols는 리스트 형식으로 저장
+        file.write(f"stopLoss = {float(stopLoss)}\n")  # 소수점 저장
 
     log_to_console("설정값 저장 완료!")
 
@@ -44,10 +45,12 @@ def load_from_config():
             else:
                 radio_var.set("N")
 
-            entry_four.delete(0, tk.END)
-            entry_five.delete(0, tk.END)
-            entry_four.insert(0, setting_data.get("usdt_ratio", ""))
-            entry_five.insert(0, setting_data.get("leverage", ""))
+            entry_usdt_ratio.delete(0, tk.END)
+            entry_leverage.delete(0, tk.END)
+            entry_stopLoss.delete(0, tk.END)
+            entry_usdt_ratio.insert(0, setting_data.get("usdt_ratio", ""))
+            entry_leverage.insert(0, setting_data.get("leverage", ""))
+            entry_stopLoss.insert(0, setting_data.get("stopLoss", ""))
 
             symbols = setting_data.get("symbols", [])
             entry_symbols.delete(0, tk.END)
@@ -89,33 +92,36 @@ def setting_button_click():
     input_one = entry_one.get()
     input_two = entry_two.get()
     input_three = radio_var.get()
-    input_four = entry_four.get()
-    input_five = entry_five.get()
+    input_four = entry_usdt_ratio.get()
+    input_five = entry_leverage.get()
     symbols = entry_symbols.get()
+    input_stopLoss = entry_stopLoss.get()
 
-    if input_one and input_two and input_three and input_four and input_five:
+    if input_one and input_two and input_three and input_four and input_five and input_stopLoss:
         symbols_list = [symbol.strip() for symbol in symbols.split(",") if symbol.strip()]
-        save_to_config(input_one, input_two, input_three, input_four, input_five, symbols_list)
+        save_to_config(input_one, input_two, input_three, input_four, input_five, symbols_list, input_stopLoss)
     else:
         log_to_console("모든 설정값을 입력해 주세요.")
 
 def disable_inputs():
     entry_one.config(state=tk.DISABLED)
     entry_two.config(state=tk.DISABLED)
-    entry_four.config(state=tk.DISABLED)
-    entry_five.config(state=tk.DISABLED)
+    entry_usdt_ratio.config(state=tk.DISABLED)
+    entry_leverage.config(state=tk.DISABLED)
     entry_symbols.config(state=tk.DISABLED)
     radio_y.config(state=tk.DISABLED)
     radio_n.config(state=tk.DISABLED)
+    entry_stopLoss.config(state=tk.DISABLED)
 
 def enable_inputs():
     entry_one.config(state=tk.NORMAL)
     entry_two.config(state=tk.NORMAL)
-    entry_four.config(state=tk.NORMAL)
-    entry_five.config(state=tk.NORMAL)
+    entry_usdt_ratio.config(state=tk.NORMAL)
+    entry_leverage.config(state=tk.NORMAL)
     entry_symbols.config(state=tk.NORMAL)
     radio_y.config(state=tk.NORMAL)
     radio_n.config(state=tk.NORMAL)
+    entry_stopLoss.config(state=tk.NORMAL)
 
 def log_to_console(message):
     console.config(state=tk.NORMAL)
@@ -151,16 +157,20 @@ radio_n = tk.Radiobutton(frame_left, text="N", variable=radio_var, value="N")
 radio_n.grid(row=2, column=1, sticky="w", padx=50)
 
 tk.Label(frame_right, text="잔고 사용률 (100% = 1) :").grid(row=0, column=0, sticky="w", pady=5)
-entry_four = tk.Entry(frame_right, width=30)
-entry_four.grid(row=0, column=1, pady=5)
+entry_usdt_ratio = tk.Entry(frame_right, width=30)
+entry_usdt_ratio.grid(row=0, column=1, pady=5)
 
 tk.Label(frame_right, text="레버리지 :").grid(row=1, column=0, sticky="w", pady=5)
-entry_five = tk.Entry(frame_right, width=30)
-entry_five.grid(row=1, column=1, pady=5)
+entry_leverage = tk.Entry(frame_right, width=30)
+entry_leverage.grid(row=1, column=1, pady=5)
 
 tk.Label(frame_right, text="Symbols (comma separated):").grid(row=2, column=0, sticky="w", pady=5)
 entry_symbols = tk.Entry(frame_right, width=30)
 entry_symbols.grid(row=2, column=1, pady=5)
+
+tk.Label(frame_right, text="손절매 (0.1 = 10%) :").grid(row=3, column=0, sticky="w", pady=5)
+entry_stopLoss = tk.Entry(frame_right, width=30)
+entry_stopLoss.grid(row=3, column=1, pady=5)
 
 btn_save = tk.Button(root, text="저장", command=setting_button_click)
 btn_save.grid(row=2, column=0, pady=10)
@@ -178,4 +188,5 @@ console = tk.Text(root, height=10, width=80)
 console.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 console.config(state=tk.DISABLED)
 
+load_from_config()
 root.mainloop()

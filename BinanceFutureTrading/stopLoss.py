@@ -1,7 +1,7 @@
 import math
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceRequestException
-from BinaceFutureTrading.UserApi import get_position_for_symbol, get_position_for_symbol_with_pnl
+from BinanceFutureTrading.UserApi import get_position_for_symbol, get_position_for_symbol_with_pnl
 from config.secrets import APIKey, secretKey
 from config.settings import testnetYN, stopLoss  # symbols를 리스트로 받음
 from binance.client import Client

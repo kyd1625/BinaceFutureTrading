@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 from binance.client import Client
-from BinaceFutureTrading.config.secrets import APIKey, secretKey
-from BinaceFutureTrading.config.settings import testnetYN
+from BinanceFutureTrading.config.secrets import APIKey, secretKey
+from BinanceFutureTrading.config.settings import testnetYN
 
 client = Client(APIKey, secretKey)
 if testnetYN == "Y" :

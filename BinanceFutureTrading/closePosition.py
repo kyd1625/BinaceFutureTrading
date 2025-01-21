@@ -2,8 +2,8 @@ from binance.client import Client
 from binance.exceptions import BinanceAPIException
 import time
 
-from BinaceFutureTrading.config.secrets import APIKey, secretKey
-from BinaceFutureTrading.config.settings import testnetYN
+from BinanceFutureTrading.config.secrets import APIKey, secretKey
+from BinanceFutureTrading.config.settings import testnetYN
 
 client = Client(APIKey, secretKey)
 if testnetYN == "Y" :

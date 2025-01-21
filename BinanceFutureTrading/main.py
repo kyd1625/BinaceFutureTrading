@@ -1,8 +1,8 @@
-from BinaceFutureTrading.characteristic.BollingerBands import returnToBollinger
-from BinaceFutureTrading.characteristic.MACD import returnToMacd
-from BinaceFutureTrading.characteristic.RSI import returnToRsi
-from BinaceFutureTrading.characteristic.stochastic import returnTostochastic
-from BinaceFutureTrading.futureTrading import realTrading
+from BinanceFutureTrading.characteristic.BollingerBands import returnToBollinger
+from BinanceFutureTrading.characteristic.MACD import returnToMacd
+from BinanceFutureTrading.characteristic.RSI import returnToRsi
+from BinanceFutureTrading.characteristic.stochastic import returnTostochastic
+from BinanceFutureTrading.futureTrading import realTrading
 from config.settings import symbols  # symbols를 리스트로 받음
 import time
 
@@ -109,7 +109,11 @@ def main():
         #    print(symbol + " 은 분석결과 매매에 적합하지 않아 매매가 이루어 지지 않습니다.")
         #    print("=" * 200)
 
-if __name__ == "__main__":
-    while True:
-        main()  # 메인 함수 실행
-        time.sleep(5)  # 10초 대기
+# if __name__ == "__main__":
+#     while True:
+#         main()  # 메인 함수 실행
+#         time.sleep(5)  # 10초 대기
+
+def startToTrading():
+    main()  # 메인 함수 실행
+    time.sleep(5)  # 10초 대기

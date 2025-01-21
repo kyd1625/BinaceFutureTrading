@@ -1,7 +1,7 @@
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
 
-from BinaceFutureTrading.syncedToServerTime import returnTo_synced_timestamp
+from BinanceFutureTrading.syncedToServerTime import returnTo_synced_timestamp
 from config.secrets import APIKey, secretKey
 from config.settings import testnetYN, symbols, leverage
 

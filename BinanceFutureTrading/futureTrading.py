@@ -1,10 +1,10 @@
 import math
 import time
 
-from BinaceFutureTrading.UserApi import get_position_for_symbol, get_position_for_symbol_with_pnl
-from BinaceFutureTrading.closePosition import close_position
-from BinaceFutureTrading.stopLoss import manage_stop_loss
-from BinaceFutureTrading.syncedToServerTime import returnTo_synced_timestamp
+from BinanceFutureTrading.UserApi import get_position_for_symbol, get_position_for_symbol_with_pnl
+from BinanceFutureTrading.closePosition import close_position
+from BinanceFutureTrading.stopLoss import manage_stop_loss
+from BinanceFutureTrading.syncedToServerTime import returnTo_synced_timestamp
 from config.secrets import APIKey, secretKey
 from config.settings import testnetYN, symbols, usdt_ratio, stopLoss, leverage  # symbols를 리스트로 받음
 from binance.client import Client
